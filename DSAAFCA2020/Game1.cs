@@ -32,7 +32,7 @@ namespace DSAAFCA2020
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
-            Activity.Track(Message + " " + ID + " " + Name);
+            Activity.Track(Message + "s00187820" + ID + "CianOReilly " + Name);
             base.Initialize();
         }
 
