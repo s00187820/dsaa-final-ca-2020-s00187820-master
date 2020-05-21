@@ -1,7 +1,9 @@
 ﻿using ActivityTracker;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 
 namespace DSAAFCA2020
 {
@@ -24,6 +26,10 @@ namespace DSAAFCA2020
         Vector2 shootOffset;
         bool hasShoot = false;
 
+        SoundEffect shootSound;
+        //SoundEffectInstance instance;
+
+        Song backgroundMusic;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -52,6 +58,10 @@ namespace DSAAFCA2020
 
             shootOffset = new Vector2(ship.Width / 15, ship.Height / 10);
             shootOffset += new Vector2(-5, 0);
+
+            shootSound = Content.Load<SoundEffect>("laser1");
+            backgroundMusic = Content.Load<Song>("themeSong");
+            MediaPlayer.Play(backgroundMusic);
         }
 
       
@@ -86,10 +96,11 @@ namespace DSAAFCA2020
             {
                 movement.Y += 1;
             }
-            if (keystate.IsKeyDown(Keys.Space))
+            if (keystate.IsKeyDown(Keys.Space) )// && !hasShoot
             {
                 shootPosition = shipPosition + shootOffset;
                 hasShoot = true;
+                shootSound.Play();
             }
 
             shipPosition += movement;
