@@ -17,6 +17,14 @@ namespace DSAAFCA2020
         private SpriteFont font;
         string Message = "Basic Movement";
 
+        private State _currentState;
+        private State _nextState;
+
+        public void ChangeState(State state)
+        {
+            _nextState = state;
+        }
+
         Texture2D background;
         Texture2D ship;
         Texture2D shoot;
@@ -30,6 +38,7 @@ namespace DSAAFCA2020
         //SoundEffectInstance instance;
 
         Song backgroundMusic;
+        
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -39,7 +48,7 @@ namespace DSAAFCA2020
        
         protected override void Initialize()
         {
-            // TODO: Add your initialization logic here
+            IsMouseVisible = true;
             Activity.Track(Message + "s00187820" + ID + "CianOReilly " + Name);
             base.Initialize();
         }
@@ -50,7 +59,8 @@ namespace DSAAFCA2020
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
             font = Content.Load<SpriteFont>("TextFont");
-            // TODO: use this.Content to load your game content here
+
+            _currentState = new MenuState(this, graphics.GraphicsDevice, Content);
 
             ship = Content.Load<Texture2D>("monoShip");
             background = Content.Load<Texture2D>("background");
@@ -75,8 +85,14 @@ namespace DSAAFCA2020
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+            if(_nextState !=null)
+            {
+                _currentState = _nextState;
+                _nextState = null;
+            }
+            _currentState.Update(gameTime);
+            _currentState.PostUpdate(gameTime);
 
-            // TODO: Add your update logic here
             Vector2 movement = Vector2.Zero;
             KeyboardState keystate = Keyboard.GetState();
             
@@ -122,6 +138,7 @@ namespace DSAAFCA2020
         protected override void Draw(GameTime gameTime)
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
+            _currentState.Draw(gameTime, spriteBatch);
             spriteBatch.Begin();
             spriteBatch.Draw(background, GraphicsDevice.Viewport.Bounds, Color.White);
             spriteBatch.DrawString(font, Message + " s00187820" + ID +
