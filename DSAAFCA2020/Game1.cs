@@ -18,35 +18,33 @@ namespace DSAAFCA2020
         string ID = Activity.StudentID;
         string Name = Activity.Name;
         private SpriteFont font;
-        string Message = "Basic Movement";
+        string Message = "static background";
 
         private State _currentState;
         private State _nextState;
-
+        private Camera _camera;
+        private Texture2D _playerTexture;
+        private Texture2D _enemyTexture;
+        private Texture2D _backgroundTexture;
+        private Vector2 _playerPosition;
         //private Button _button;
         //private SpriteFont _font;
         //private int _score;
         //private ScoreManager _scoreManager;
         //private float _timer;
         //public static Random Random;
-    
+
         public void ChangeState(State state)
         {
             _nextState = state;
         }
-
-        Texture2D background;
-        Texture2D ship;
         Texture2D shoot;
-
-        Vector2 shipPosition;
         Vector2 shootPosition;
         Vector2 shootOffset;
         bool hasShoot = false;
 
         SoundEffect shootSound;
         //SoundEffectInstance instance;
-
         Song backgroundMusic;
         
         public Game1()
@@ -72,6 +70,11 @@ namespace DSAAFCA2020
             font = Content.Load<SpriteFont>("TextFont");
 
             _currentState = new MenuState(this, graphics.GraphicsDevice, Content);
+            _camera = new Camera();
+            _playerTexture = Content.Load<Texture2D>("monoShip");
+            _enemyTexture = Content.Load<Texture2D>("monoEn2Ship");
+            _backgroundTexture = Content.Load<Texture2D>("background");
+
             //_scoreManager = ScoreManager.Load();
             //_font = Content.Load<SpriteFont>("Fonts/File");
             //_button = new Button(Content.Load<Texture2D>("button"), _font)
@@ -82,11 +85,11 @@ namespace DSAAFCA2020
             //_button.Click += Button_Click;
             //_timer = 5;
 
-            ship = Content.Load<Texture2D>("monoShip");
-            background = Content.Load<Texture2D>("background");
+            //ship = Content.Load<Texture2D>("monoShip");
+            //background = Content.Load<Texture2D>("background");
             shoot = Content.Load<Texture2D>("bullet");
 
-            shootOffset = new Vector2(ship.Width / 15, ship.Height / 10);
+            shootOffset = new Vector2(_playerTexture.Width / 15, _playerTexture.Height / 10);
             shootOffset += new Vector2(-5, 0);
 
             shootSound = Content.Load<SoundEffect>("laser1");
@@ -146,31 +149,37 @@ namespace DSAAFCA2020
 
             Vector2 movement = Vector2.Zero;
             KeyboardState keystate = Keyboard.GetState();
-            
+
             //movement
-            if (keystate.IsKeyDown(Keys.Right))
+            if (Keyboard.GetState().IsKeyDown(Keys.W))
+                _playerPosition.Y -= 3f;
+            if (Keyboard.GetState().IsKeyDown(Keys.S))
+                _playerPosition.Y += 3f;
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
+                _playerPosition.X -= 3f;
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
+                _playerPosition.X += 3f;
+
+            _camera.Follow(_playerPosition);
+            //if (keystate.IsKeyDown(Keys.Left))
+            //{
+            //    movement.X -= 1;
+            //}
+            //if (keystate.IsKeyDown(Keys.Up))
+            //{
+            //    movement.Y -= 1;
+            //}
+            //if (keystate.IsKeyDown(Keys.Down))
+            //{
+            //    movement.Y += 1;
+            //}
+            if (Keyboard.GetState().IsKeyDown(Keys.Space) )// && !hasShoot
             {
-                movement.X += 1;
-            }
-            if (keystate.IsKeyDown(Keys.Left))
-            {
-                movement.X -= 1;
-            }
-            if (keystate.IsKeyDown(Keys.Up))
-            {
-                movement.Y -= 1;
-            }
-            if (keystate.IsKeyDown(Keys.Down))
-            {
-                movement.Y += 1;
-            }
-            if (keystate.IsKeyDown(Keys.Space) )// && !hasShoot
-            {
-                shootPosition = shipPosition + shootOffset;
+                shootPosition = _playerPosition + shootOffset;
                 hasShoot = true;
                 shootSound.Play();
             }
-            shipPosition += movement;
+            _playerPosition += movement;
 
             if (hasShoot)
             {
@@ -190,20 +199,25 @@ namespace DSAAFCA2020
         {
             GraphicsDevice.Clear(Color.CornflowerBlue);
             _currentState.Draw(gameTime, spriteBatch);
+
             spriteBatch.Begin();
-            spriteBatch.Draw(background, GraphicsDevice.Viewport.Bounds, Color.White);
+            spriteBatch.Draw(_backgroundTexture, GraphicsDevice.Viewport.Bounds, Color.White);
             spriteBatch.DrawString(font, Message + " s00187820" + ID +
                 "CianOReilly " + Name, new Vector2(10, 10), Color.White);
+            spriteBatch.End();
+
+            spriteBatch.Begin(transformMatrix:_camera.Transform);
             //_button.Draw(gameTime, spriteBatch);
             //spriteBatch.DrawString(_font, "Score:" + _score, new Vector2(20, 10), Color.Red);
             //spriteBatch.DrawString(_font, "Time:" + _timer.ToString("N2"), new Vector2(10, 30), Color.Red);
             //spriteBatch.DrawString(_font, "Highscores:" + string.Join("\n", _scoreManager.Highscores.Select(c=> c.PlayerName + ": "+ c.Value).ToArray()), new Vector2(20, 10), Color.Red);
             if (hasShoot) spriteBatch.Draw(shoot, shootPosition, Color.White);
-            spriteBatch.Draw(ship, shipPosition, Color.White);
-            
+            spriteBatch.Draw(_playerTexture, _playerPosition, Color.White);
+            spriteBatch.Draw(_enemyTexture, new Vector2(0,0), Color.White);
+            spriteBatch.Draw(_enemyTexture, new Vector2(5, 5), Color.White);
+            spriteBatch.Draw(_enemyTexture, new Vector2(-3, -6), Color.White);
             spriteBatch.End();
-            // TODO: Add your drawing code here
-
+            
             base.Draw(gameTime);
         }
     }
