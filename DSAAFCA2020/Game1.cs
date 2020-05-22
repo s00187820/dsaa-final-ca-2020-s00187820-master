@@ -1,9 +1,12 @@
 ﻿using ActivityTracker;
+using DSAAFCA2020.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Audio;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using System;
+using System.Linq;
 
 namespace DSAAFCA2020
 {
@@ -20,6 +23,13 @@ namespace DSAAFCA2020
         private State _currentState;
         private State _nextState;
 
+        //private Button _button;
+        //private SpriteFont _font;
+        //private int _score;
+        //private ScoreManager _scoreManager;
+        //private float _timer;
+        //public static Random Random;
+    
         public void ChangeState(State state)
         {
             _nextState = state;
@@ -48,6 +58,7 @@ namespace DSAAFCA2020
        
         protected override void Initialize()
         {
+            //Random = new Random();
             IsMouseVisible = true;
             Activity.Track(Message + "s00187820" + ID + "CianOReilly " + Name);
             base.Initialize();
@@ -61,6 +72,15 @@ namespace DSAAFCA2020
             font = Content.Load<SpriteFont>("TextFont");
 
             _currentState = new MenuState(this, graphics.GraphicsDevice, Content);
+            //_scoreManager = ScoreManager.Load();
+            //_font = Content.Load<SpriteFont>("Fonts/File");
+            //_button = new Button(Content.Load<Texture2D>("button"), _font)
+            //{
+            //    Text = "Enemy",
+            //};
+
+            //_button.Click += Button_Click;
+            //_timer = 5;
 
             ship = Content.Load<Texture2D>("monoShip");
             background = Content.Load<Texture2D>("background");
@@ -74,8 +94,20 @@ namespace DSAAFCA2020
             MediaPlayer.Play(backgroundMusic);
         }
 
-      
+        //private void Button_Click(object sender, EventArgs e)
+        //{
+        //    SetButtonPosition((Button)sender);
+        //}
+
+        //private void SetButtonPosition (Button button)
+        //{
+        //    var x = Random.Next(0, graphics.PreferredBackBufferWidth - button.Rectangle.Width);
+        //    var y = Random.Next(0, graphics.PreferredBackBufferHeight - button.Rectangle.Height);
+
+        //    button.Position = new Vector2(x, y);
+        //}
         protected override void UnloadContent()
+        
         {
             // TODO: Unload any non ContentManager content here
         }
@@ -93,9 +125,29 @@ namespace DSAAFCA2020
             _currentState.Update(gameTime);
             _currentState.PostUpdate(gameTime);
 
+            //_timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            //if (_timer <= 0)
+            //{
+            //    SetButtonPosition(_button);
+
+            //    _scoreManager.Add(new Models.Score()
+            //     {
+            //        PlayerName = "Name",
+            //        Value = _score,
+            //     }
+            //    );
+
+            //    ScoreManager.Save(_scoreManager);
+
+            //    _timer = 5;
+            //    _score = 0;
+            //}
+            //_button.Update(gameTime);
+
             Vector2 movement = Vector2.Zero;
             KeyboardState keystate = Keyboard.GetState();
             
+            //movement
             if (keystate.IsKeyDown(Keys.Right))
             {
                 movement.X += 1;
@@ -118,7 +170,6 @@ namespace DSAAFCA2020
                 hasShoot = true;
                 shootSound.Play();
             }
-
             shipPosition += movement;
 
             if (hasShoot)
@@ -143,6 +194,10 @@ namespace DSAAFCA2020
             spriteBatch.Draw(background, GraphicsDevice.Viewport.Bounds, Color.White);
             spriteBatch.DrawString(font, Message + " s00187820" + ID +
                 "CianOReilly " + Name, new Vector2(10, 10), Color.White);
+            //_button.Draw(gameTime, spriteBatch);
+            //spriteBatch.DrawString(_font, "Score:" + _score, new Vector2(20, 10), Color.Red);
+            //spriteBatch.DrawString(_font, "Time:" + _timer.ToString("N2"), new Vector2(10, 30), Color.Red);
+            //spriteBatch.DrawString(_font, "Highscores:" + string.Join("\n", _scoreManager.Highscores.Select(c=> c.PlayerName + ": "+ c.Value).ToArray()), new Vector2(20, 10), Color.Red);
             if (hasShoot) spriteBatch.Draw(shoot, shootPosition, Color.White);
             spriteBatch.Draw(ship, shipPosition, Color.White);
             
