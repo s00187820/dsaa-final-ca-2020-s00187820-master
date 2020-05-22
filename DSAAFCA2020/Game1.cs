@@ -18,7 +18,7 @@ namespace DSAAFCA2020
         string ID = Activity.StudentID;
         string Name = Activity.Name;
         private SpriteFont font;
-        string Message = "static background";
+        string Message = "final";
 
         private State _currentState;
         private State _nextState;
@@ -33,7 +33,6 @@ namespace DSAAFCA2020
         //private ScoreManager _scoreManager;
         //private float _timer;
         //public static Random Random;
-
         public void ChangeState(State state)
         {
             _nextState = state;
@@ -159,20 +158,8 @@ namespace DSAAFCA2020
                 _playerPosition.X -= 3f;
             if (Keyboard.GetState().IsKeyDown(Keys.D))
                 _playerPosition.X += 3f;
-
             _camera.Follow(_playerPosition);
-            //if (keystate.IsKeyDown(Keys.Left))
-            //{
-            //    movement.X -= 1;
-            //}
-            //if (keystate.IsKeyDown(Keys.Up))
-            //{
-            //    movement.Y -= 1;
-            //}
-            //if (keystate.IsKeyDown(Keys.Down))
-            //{
-            //    movement.Y += 1;
-            //}
+          
             if (Keyboard.GetState().IsKeyDown(Keys.Space) )// && !hasShoot
             {
                 shootPosition = _playerPosition + shootOffset;
@@ -213,9 +200,9 @@ namespace DSAAFCA2020
             //spriteBatch.DrawString(_font, "Highscores:" + string.Join("\n", _scoreManager.Highscores.Select(c=> c.PlayerName + ": "+ c.Value).ToArray()), new Vector2(20, 10), Color.Red);
             if (hasShoot) spriteBatch.Draw(shoot, shootPosition, Color.White);
             spriteBatch.Draw(_playerTexture, _playerPosition, Color.White);
-            spriteBatch.Draw(_enemyTexture, new Vector2(0,0), Color.White);
-            spriteBatch.Draw(_enemyTexture, new Vector2(5, 5), Color.White);
-            spriteBatch.Draw(_enemyTexture, new Vector2(-3, -6), Color.White);
+            spriteBatch.Draw(_enemyTexture, new Vector2(500,200), Color.White);
+            spriteBatch.Draw(_enemyTexture, new Vector2(-100, -300), Color.White);
+            spriteBatch.Draw(_enemyTexture, new Vector2(-400, 100), Color.White);
             spriteBatch.End();
             
             base.Draw(gameTime);
